@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: apigateway # Set application name for API Gateway
+  server:
+    port: 8080 # Set server port for API Gateway
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        - id: msa1 # Unique ID for the route
+          uri: http://localhost:8084 # Use load balancing for MSA1 service
+          predicates: # Matching criteria for this route
+            - Path=/msa1/** # Match requests starting with /msa1/
+
+        - id: userservice # Unique ID for the user service route
+          uri: http://localhost:8085 # Route to user service at port 8085
+          predicates:
+            - Path=/user/** # Match requests starting with /user/
+
+
+  # Database configuration (replace with your actual MySQL details)
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://tourprjdb.c1a0scioqxnn.ap-northeast-2.rds.amazonaws.com:3306/tourprj?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: root
+    password: lamaboy123
+
+  # JPA configuration (may need adjustments based on your entity classes)
+  jpa:
+    hibernate:
+      ddl-auto: none # Avoid automatic schema creation
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # Use default naming strategy
+
+# JWT secret (replace with a strong, unique secret)
+jwt:
+  secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
+
+  # Eureka client configuration for service discovery
+eureka:
+  client:
+    register-with-eureka: true # Register with Eureka server
+    fetch-registry: true # Fetch service registry from Eureka
+    service-url:
+      defaultZone: http://admin:1234@localhost:8761/eureka # Eureka server URL with credentials
+
