@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 public class CustomFilter implements GlobalFilter, Ordered {
 
-    private static final String[] WHITELIST = {"/user/register", "/user/login", "/user/test"};
+    private static final String[] WHITELIST = {"/user/register", "/user/login"};
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -58,6 +58,7 @@ public class CustomFilter implements GlobalFilter, Ordered {
                 if(isAuthorized(authHeader, "ROLE_USER")){
                     return chain.filter(exchange)
                         .then(Mono.fromRunnable(() -> {
+                            System.out.println("user login comp");
                         }));
                 }else{
                     return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN,"Access denied"));
@@ -114,7 +115,8 @@ public class CustomFilter implements GlobalFilter, Ordered {
     }
 
     private boolean isAuthorized(String authHeader, String role){
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        //if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        if (authHeader != null) {
             String jwt = authHeader.substring(7);
             List<String> roles = getRoles(jwt);
             for (int i = 0; i < roles.size(); i++){
